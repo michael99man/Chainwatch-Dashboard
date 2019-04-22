@@ -1,0 +1,27 @@
+{
+  "name": "chainwatch-dashboard",
+  "version": "0.0.1",
+  "description": "A dashboard for viewing results from ChainWatch's core engine.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michael99man/ChainWatch-Dashboard.git"
+  },
+  "keywords": [
+    "Express",
+    "Ethereum",
+    "blockchain",
+    "chainwatch",
+    "React"
+  ],
+  "author": "Michael Man",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michael99man/ChainWatch-Dashboard/issues"
+  },
+  "homepage": "https://github.com/michael99man/ChainWatch-Dashboard#readme"
+}
