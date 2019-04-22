@@ -1,5 +1,6 @@
 #!/usr/bin/env nodejs
 const express = require('express')
+const cors = require('cors')
 var MongoClient = require('mongodb').MongoClient;
 const app = express()
 const port = 8080
@@ -14,6 +15,14 @@ MongoClient.connect(url, {
 	console.log("Connected to MongoDB");
 });
 
+
+/* Allow ALL requests */
+var corsOptions = {
+  origin: function (origin, callback) {
+      callback(null, true)
+  }
+}
+app.options('*', cors(corsOptions))
 
 app.get('/', function(req, res){
 	res.send('Hello World!')
