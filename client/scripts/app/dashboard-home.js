@@ -11,15 +11,15 @@ const stats_collection_rate = 20;
 
 (function ($) {
   $(document).ready(function () {
-    $.ajax({url: "http://chainwatch.info/statistics", success: function(stats){
+    $.ajax({url: "http://chainwatch.info/api/statistics", success: function(stats){
         console.log(stats);
         window.statistics = stats;
 
-        $.ajax({url: "http://chainwatch.info/reorg_events", success: function(reorg){
+        $.ajax({url: "http://chainwatch.info/api/reorg_events", success: function(reorg){
           console.log(reorg);
           window.reorgs = reorg;
 
-          $.ajax({url: "http://chainwatch.info/density_events", success: function(density){
+          $.ajax({url: "http://chainwatch.info/api/density_events", success: function(density){
             console.log(density);
             window.density = density;
             init();
