@@ -104,8 +104,8 @@
                     <div class="card-body p-0 d-flex">
                       <div class="d-flex flex-column m-auto">
                         <div class="stats-small__data text-center">
-                          <span class="stats-small__label text-uppercase">Forked Blocks (24hr)</span>
-                          <h6 class="stats-small__value count my-3 forked"></h6>
+                          <span class="stats-small__label text-uppercase">Hashrate (24hr)</span>
+                          <h6 class="stats-small__value count my-3 hashrate"></h6>
                         </div>
                         <!--<div class="stats-small__data">
                           <span class="stats-small__percentage stats-small__percentage--increase">TBD</span>
@@ -120,8 +120,8 @@
                     <div class="card-body p-0 d-flex">
                       <div class="d-flex flex-column m-auto">
                         <div class="stats-small__data text-center">
-                          <span class="stats-small__label text-uppercase">Hashrate</span>
-                          <h6 class="stats-small__value count my-3 hashrate"></h6>
+                          <span class="stats-small__label text-uppercase">Block time (24hr)</span>
+                          <h6 class="stats-small__value count my-3 blocktime"></h6>
                         </div>
                       </div>
                       <canvas height="120" class="blog-overview-stats-small-2"></canvas>
@@ -133,8 +133,8 @@
                     <div class="card-body p-0 d-flex">
                       <div class="d-flex flex-column m-auto">
                         <div class="stats-small__data text-center">
-                          <span class="stats-small__label text-uppercase">Block time</span>
-                          <h6 class="stats-small__value count my-3 blocktime"></h6>
+                          <span class="stats-small__label text-uppercase">Difficulty</span>
+                          <h6 class="stats-small__value count my-3 difficulty"></h6>
                         </div>
                       </div>
                       <canvas height="120" class="blog-overview-stats-small-3"></canvas>
@@ -146,8 +146,8 @@
                     <div class="card-body p-0 d-flex">
                       <div class="d-flex flex-column m-auto">
                         <div class="stats-small__data text-center">
-                          <span class="stats-small__label text-uppercase">Largest Miner %</span>
-                          <h6 class="stats-small__value count my-3 minershare">2,413</h6>
+                          <span class="stats-small__label text-uppercase">Forked Blocks (24hr)</span>
+                          <h6 class="stats-small__value count my-3 forked"></h6>
                         </div>
                       </div>
                       <canvas height="120" class="blog-overview-stats-small-4"></canvas>
@@ -159,8 +159,8 @@
                     <div class="card-body p-0 d-flex">
                       <div class="d-flex flex-column m-auto">
                         <div class="stats-small__data text-center">
-                          <span class="stats-small__label text-uppercase">Difficulty</span>
-                          <h6 class="stats-small__value count my-3 difficulty">17,281</h6>
+                          <span class="stats-small__label text-uppercase">Largest Miner % (24hr)</span>
+                          <h6 class="stats-small__value count my-3 minershare"></h6>
                         </div>
                       </div>
                       <canvas height="120" class="blog-overview-stats-small-5"></canvas>
@@ -171,7 +171,7 @@
               <!-- End Small Stats Blocks -->
               <div class="row">
                 <!-- Users Stats -->
-                <div class="col-lg-8 col-md-12 col-sm-12 mb-4">
+                <div class="col-lg-12 col-md-12 col-sm-12 mb-4">
                   <div class="card card-small">
                     <div class="card-header border-bottom">
                       <h6 class="m-0">Network Trends</h6>
@@ -181,11 +181,10 @@
                         <div class="col-12 col-sm-10">
                         </div>
                         <div class="col-12 col-sm-2 d-flex mb-2 mb-sm-0">
-                          <select class="custom-select custom-select-sm" style="max-width: 130px;">
-                              <option selected>Hash Rate</option>
-                              <option value="1">Forked blocks</option>
-                              <option value="2">Difficulty</option>
-                              <option value="3">Block time</option>
+                          <select class="custom-select custom-select-sm" id="chart-select" style="max-width: 130px;">
+                              <option selected value="1">Hash Rate</option>
+                              <option value="2">Block Time</option>
+                              <option value="3">Difficulty</option>
                             </select>
                         </div>
                       </div>
@@ -195,6 +194,7 @@
                 </div>
                 <!-- End Users Stats -->
                 <!-- Users By Device Stats -->
+                <!--
                 <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                   <div class="card card-small h-100">
                     <div class="card-header border-bottom">
@@ -207,7 +207,7 @@
                       <div class="row">
                         <div class="col">
                           <select class="custom-select custom-select-sm" style="max-width: 130px;">
-                            <option selected>Last 20 Blocks</option>
+                            <option selected>Last 24 Hours</option>
                             <option value="1">Last Week</option>
                             <option value="2">Last Month</option>
                           </select>
@@ -218,67 +218,8 @@
                       </div>
                     </div>
                   </div>
+                -->
                 </div>
-                <!-- Top Referrals Component -->
-                <!--<div class="col-lg-3 col-md-12 col-sm-12 mb-4">
-                  <div class="card card-small">
-                    <div class="card-header border-bottom">
-                      <h6 class="m-0">Top Miners</h6>
-                    </div>
-                    <div class="card-body p-0">
-                      <ul class="list-group list-group-small list-group-flush">
-                        <li class="list-group-item d-flex px-3">
-                          <span class="text-semibold text-fiord-blue">GitHub</span>
-                          <span class="ml-auto text-right text-semibold text-reagent-gray">19,291</span>
-                        </li>
-                        <li class="list-group-item d-flex px-3">
-                          <span class="text-semibold text-fiord-blue">Stack Overflow</span>
-                          <span class="ml-auto text-right text-semibold text-reagent-gray">11,201</span>
-                        </li>
-                        <li class="list-group-item d-flex px-3">
-                          <span class="text-semibold text-fiord-blue">Hacker News</span>
-                          <span class="ml-auto text-right text-semibold text-reagent-gray">9,291</span>
-                        </li>
-                        <li class="list-group-item d-flex px-3">
-                          <span class="text-semibold text-fiord-blue">Reddit</span>
-                          <span class="ml-auto text-right text-semibold text-reagent-gray">8,281</span>
-                        </li>
-                        <li class="list-group-item d-flex px-3">
-                          <span class="text-semibold text-fiord-blue">The Next Web</span>
-                          <span class="ml-auto text-right text-semibold text-reagent-gray">7,128</span>
-                        </li>
-                        <li class="list-group-item d-flex px-3">
-                          <span class="text-semibold text-fiord-blue">Tech Crunch</span>
-                          <span class="ml-auto text-right text-semibold text-reagent-gray">6,218</span>
-                        </li>
-                        <li class="list-group-item d-flex px-3">
-                          <span class="text-semibold text-fiord-blue">YouTube</span>
-                          <span class="ml-auto text-right text-semibold text-reagent-gray">1,218</span>
-                        </li>
-                        <li class="list-group-item d-flex px-3">
-                          <span class="text-semibold text-fiord-blue">Adobe</span>
-                          <span class="ml-auto text-right text-semibold text-reagent-gray">827</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="card-footer border-top">
-                      <div class="row">
-                        <div class="col">
-                          <select class="custom-select custom-select-sm">
-                            <option selected>Last Week</option>
-                            <option value="1">Today</option>
-                            <option value="2">Last Month</option>
-                            <option value="3">Last Year</option>
-                          </select>
-                        </div>
-                        <div class="col text-right view-report">
-                          <a href="#">Full report &rarr;</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>-->
-                <!-- End Top Referrals Component -->
               </div>
             </div>
             <footer class="main-footer d-flex p-2 px-3 bg-white border-top">
@@ -295,6 +236,7 @@
       <script src="https://unpkg.com/shards-ui@latest/dist/js/shards.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Sharrre/2.0.1/jquery.sharrre.min.js"></script>
       <script src="scripts/extras.1.1.0.min.js"></script>
+      <script src="scripts/moment.min.js"></script> 
       <script src="scripts/shards-dashboards.1.1.0.js"></script>
       <script src="scripts/app/dashboard-home.js"></script>
     </body>
