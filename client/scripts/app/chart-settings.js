@@ -1,5 +1,6 @@
 // Trend Chart Options
 var trendsOptions = {
+  maintainAspectRatio:false,
   responsive: true,
   legend: {
     position: 'top'
@@ -36,7 +37,7 @@ var trendsOptions = {
       yAxes: "NOT-SET",
     },
     animation: {
-      duration: 5000
+      duration: 1000
     },
     hover: {
       mode: 'nearest',
