@@ -46,14 +46,14 @@ app.get('/statistics', async function(req, res){
 	var network = req.query.network;
 
 	var data = await mongodb.collection("statistics").find({"network":network}).toArray();
-	res.json({"numForked": numForked, "statistics" : data});
+	res.json(data);
 });
 
 app.get('/numForked', async function(req, res){
 	var network = req.query.network;
 
 	// calculate number of forked blocks in the last 24 hours
-	var results = await mongodb.collection("reorg_events").find({ $and: [{$where:function () { return Date.now() - this._id.getTimestamp() < (24 * 60 * 60 * 1000)  }}, {network: network}]  })
+	var results = await mongodb.collection("reorg_events").find({ $and: [{$where:function () { return Date.now() - this._id.getTimestamp() < (24 * 60 * 60 * 1000)  }}, {"network": network}]  })
 	var numForked=0;
 	results.forEach(function (doc) {numForked += doc["numBlocks"];})
 	res.json({"numForked": numForked});
