@@ -296,7 +296,7 @@ function computeMaxes(){
   var powD = Math.floor(Math.log10(tentativeMaxD));
   var maxD = Math.ceil(tentativeMaxD/(10**(powD))) * (10**(powD));
 
-  window.maxes[window.network] = {hashrateMax: maxH, difficultyMax: maxD, blockTimeMax: 25};
+  window.maxes[window.network] = {hashrateMax: maxH, difficultyMax: maxD, blockTimeMax: 30};
   console.log("Largest Hashrate: ",tentativeMaxH/1.3, "Proposed Max:", maxH);
   console.log("Largest Difficulty: ",tentativeMaxD/1.3, "Proposed Max:", maxD);
 }

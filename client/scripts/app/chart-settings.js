@@ -181,7 +181,7 @@ var trendsOptions = {
     trendsOptions.scales.yAxes = [{
       ticks: {
         min: 0,
-        max: 25,
+        max: max,
         callback: function (tick, index, ticks) {
           if (tick === 0) {
             return tick;
