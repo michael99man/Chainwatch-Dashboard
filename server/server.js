@@ -28,23 +28,26 @@ app.get('/', function(req, res){
 	res.send('Hello World!')
 });
 
-
 app.get('/reorg_events', async function(req, res){
-	var data = await mongodb.collection("reorg_events").find().toArray();
+	var network = req.query.network;
+	
+	var data = await mongodb.collection("reorg_events").find({"network":network}).toArray();
 	res.json(data);
 });
 
 app.get('/density_events', async function(req, res){
-	var data = await mongodb.collection("density_events").find().toArray();
+	var network = req.query.network;
+
+	var data = await mongodb.collection("density_events").find({"network":network}).toArray();
 	res.json(data);
 });
 
 app.get('/statistics', async function(req, res){
 	var network = req.query.network;
 
-	// DO AVERAGING
+	// DO AVERAGING?
 	
-	var data = await mongodb.collection("statistics").find().toArray();
+	var data = await mongodb.collection("statistics").find({"network":network}).toArray();
 	res.json(data);
 });
 

@@ -17,6 +17,21 @@
       xAxes: [{
         gridLines: false,
         type: "time",
+        time: {
+          unit: "day",
+          unitStepSize: 1,
+          displayFormats: {
+             'millisecond': 'h:mm a',
+             'second': 'h:mm a',
+             'minute': 'h:mm a',
+             'hour': 'h:mm a',
+             'day': 'MMM DD',
+             'week': 'MMM DD',
+             'month': 'MMM DD',
+             'quarter': 'MMM DD',
+             'year': 'MMM DD',
+          }
+        }
       }],
       yAxes: "NOT-SET",
     },
@@ -89,10 +104,28 @@
 function generateOptions(dataType, labels, dataset){
   // Dataset options
   var trendsData = {
-    // Generate the days labels on the X axis.
+    // Generate the labels on the X axis.
     labels: labels,
     datasets: "NOT-SET"
   };
+
+  if(!fullRange){
+    // general scale labeling
+    var duration = moment.duration(datetimeEnd.diff(datetimeStart));
+    console.log(duration.asDays());
+    if(duration.asDays() >= 4){
+      trendsOptions.scales.xAxes[0].time.unit="day";
+      trendsOptions.scales.xAxes[0].time.unitStepSize = 1;
+      // use full days ticks (default)
+    } else if(duration.asDays() >= 2){
+      // use hour but smaller ticks
+      trendsOptions.scales.xAxes[0].time.unit="hour";
+      trendsOptions.scales.xAxes[0].time.unitStepSize = 4;
+    } else {
+      trendsOptions.scales.xAxes[0].time.unit="hour";
+      trendsOptions.scales.xAxes[0].time.unitStepSize = 1;
+    } 
+  }
 
   if(dataType == 1){
     var tentativeMax = Math.max.apply(null, dataset) * 1.3;

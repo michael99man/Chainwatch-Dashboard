@@ -57,7 +57,7 @@ $('#chart-select').change(generateChart);
 
 // denotes whether to display the entire range of dates
 var fullRange = true;
-var datetimeStart = undefined;
+var datetimeStart = moment();
 var datetimeEnd = moment();
 
 
@@ -161,7 +161,7 @@ function init(){
   console.log("Largest hashrate share: " + largestShare);
 
   // DIFFICULTY
-  var difficulty = parseInt(latestStats.difficulty).toExponential(3);
+  var difficulty = Math.round(latestStats.difficulty/(10**window.exponent)) + " " + unit();
 
   // change values of small stats
   // TODO
@@ -311,7 +311,6 @@ function generateChart(){
     labels = obj.timestamps;
     dataset = obj.dataset;
   }
-  console.log(dataset);
 
   // generate the options for this data type
   var options = generateOptions(dataType, labels, dataset);
