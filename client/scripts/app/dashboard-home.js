@@ -14,75 +14,70 @@ window.reorgs = {};
 
 const stats_collection_rate = 20;
 
-// initialize with ethereum
-$.ajax({url: "http://chainwatch.info/api/statistics?network=ethereum", success: function(stats){
-  console.log(stats);
-  window.statistics[window.network] = stats;
-
-  //$.ajax({url: "http://chainwatch.info/api/reorg_events?network=etheruem", success: function(reorg){
-    //console.log(reorg);
-    //window.reorgs[window.network] = reorg;
-
-     // draw the dashboard
-     $(document).ready(function () {
-       init();
-     });
- //}});
-}});
-
-
-// DL Ropsten stats in the background
-$.ajax({url: "http://chainwatch.info/api/statistics?network=ropsten", success: function(stats){
-  window.statistics["ropsten"] = stats;
-}});
-/*
-$.ajax({url: "http://chainwatch.info/api/reorg_events?network=ropsten", success: function(reorg){
-  window.reorgs["ropsten"] = reorg;
-}});*/
-
-$('#chart-select').change(generateChart);
-
- $('input[name="datetimes"]').daterangepicker({
-    "timePicker": true,
-    "startDate": "04/22/2019",
-    "endDate": moment().format('MM/DD/YYYY'),
-    "minDate": "04/22/2019",
-    "maxDate": moment().format('MM/DD/YYYY')
-}, function(start, end, label) {
-  fullRange = false;
-  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-  datetimeStart = start;
-  datetimeEnd = end;
-  generateChart();
-});
-
 // denotes whether to display the entire range of dates
 var fullRange = true;
 var datetimeStart = moment();
 var datetimeEnd = moment();
 
+$(document).ready(function () {
+  changeNetworkName();
+
+  $('#chart-select').change(generateChart);
+
+  $('input[name="datetimes"]').daterangepicker({
+    "timePicker": true,
+    "startDate": "04/22/2019",
+    "endDate": moment().format('MM/DD/YYYY'),
+    "minDate": "04/22/2019",
+    "maxDate": moment().format('MM/DD/YYYY')
+  }, function(start, end, label) {
+    fullRange = false;
+    console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    datetimeStart = start;
+    datetimeEnd = end;
+    generateChart();
+  });
+
+  /* ----- DOWNLOAD DATA ----- */
+  // initialize with ethereum
+  $.ajax({url: "http://chainwatch.info/api/statistics?network=ethereum", success: function(stats){
+    console.log(stats);
+    window.statistics[window.network] = stats;
+
+    //$.ajax({url: "http://chainwatch.info/api/reorg_events?network=etheruem", success: function(reorg){
+      //console.log(reorg);
+      //window.reorgs[window.network] = reorg;
+
+       // draw the dashboard
+       $(document).ready(function () {
+         loadData();
+       });
+   //}});
+ }});
+
+  // DL Ropsten stats in the background
+  $.ajax({url: "http://chainwatch.info/api/statistics?network=ropsten", success: function(stats){
+    window.statistics["ropsten"] = stats;
+  }});
+  /*
+  $.ajax({url: "http://chainwatch.info/api/reorg_events?network=ropsten", success: function(reorg){
+    window.reorgs["ropsten"] = reorg;
+  }});*/
+
+});
 
 
-function init(){
+function loadData(){
   console.log("Initializing");
   const STATS = window.statistics[window.network];
+
+  // remove loading wheel
+  $(".main-content-container").addClass("loaded")
 
   // SET:
   // window.statistics
   // window.reorgs
   // window.density 
-
-
-  // replace instances of "NETWORK-NAME" with the actual network
-  var elements = $(".network-name");
-  var networkCap = window.network.charAt(0).toUpperCase() + window.network.slice(1)
-  for(var i=0; i<elements.length; i++){
-    var e = elements[i];
-    var newText = e.innerHTML.replace("Ethereum", "NETWORK-NAME");
-    newText = newText.replace("Ropsten", "NETWORK-NAME");
-    newText = newText.replace("NETWORK-NAME", networkCap);
-    e.innerHTML = newText;
-  }
 
   //
   /* -------------------- Small Stats -------------------- */
@@ -253,7 +248,8 @@ function changeNetwork(){
     window.network="ropsten";
     window.exponent = 6;
   }
-  init();
+  changeNetworkName();
+  loadData();
   return false;
 }
 
@@ -335,7 +331,7 @@ function generateChart(){
 /*  var aocMeta = TrendsChart.getDatasetMeta(0);
   aocMeta.data[0]._model.radius = 0;
   aocMeta.data[trendsData.datasets[0].data.length - 1]._model.radius = 0;
-*/
+  */
 
   // Render the chart.
   window.TrendsChart.render();
@@ -375,4 +371,17 @@ function smooth(timestamps, dataset, numPoints){
 
   return {timestamps:newTimestamps, dataset:newDataset};
 }
+
+function changeNetworkName(){
+   // replace instances of "___" with the actual network
+   var elements = $(".network-name");
+   var networkCap = window.network.charAt(0).toUpperCase() + window.network.slice(1)
+   for(var i=0; i<elements.length; i++){
+     var e = elements[i];
+     var newText = e.innerHTML.replace("Ethereum", "___");
+     newText = newText.replace("Ropsten", "___");
+     newText = newText.replace("___", networkCap);
+     e.innerHTML = newText;
+   }
+ }
 

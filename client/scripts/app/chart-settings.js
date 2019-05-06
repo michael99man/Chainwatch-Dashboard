@@ -1,11 +1,11 @@
 // Trend Chart Options
-  var trendsOptions = {
-    responsive: true,
-    legend: {
-      position: 'top'
-    },
-    elements: {
-      line: {
+var trendsOptions = {
+  responsive: true,
+  legend: {
+    position: 'top'
+  },
+  elements: {
+    line: {
         // A higher value makes the line look skewed at this ratio.
         tension: 0.3
       },
@@ -21,22 +21,22 @@
           unit: "day",
           unitStepSize: 1,
           displayFormats: {
-             'millisecond': 'h:mm a',
-             'second': 'h:mm a',
-             'minute': 'h:mm a',
-             'hour': 'h:mm a',
-             'day': 'MMM DD',
-             'week': 'MMM DD',
-             'month': 'MMM DD',
-             'quarter': 'MMM DD',
-             'year': 'MMM DD',
+            'millisecond': 'h:mm a',
+            'second': 'h:mm a',
+            'minute': 'h:mm a',
+            'hour': 'h:mm a',
+            'day': 'MMM DD',
+            'week': 'MMM DD',
+            'month': 'MMM DD',
+            'quarter': 'MMM DD',
+            'year': 'MMM DD',
           }
         }
       }],
       yAxes: "NOT-SET",
     },
     animation: {
-      duration: 500
+      duration: 5000
     },
     hover: {
       mode: 'nearest',
@@ -51,47 +51,47 @@
             // process dates
             var datestring = data.labels[tooltipItem[0].index];
             return formDateTitle(datestring);
-        },
-        label: function(tooltipItem, data) {
+          },
+          label: function(tooltipItem, data) {
             return "NOT-SET";
+          }
         }
       }
-    }
-  };
+    };
 
   // Options
   function boSmallStatsOptions(max) {
     return {
       maintainAspectRatio: true,
       responsive: true,
-        legend: {
-          display: false
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: false,
+        custom: false
+      },
+      elements: {
+        point: {
+          radius: 0
         },
-        tooltips: {
-          enabled: false,
-          custom: false
-        },
-        elements: {
-          point: {
-            radius: 0
-          },
-          line: {
-            tension: .4
+        line: {
+          tension: .4
+        }
+      },
+      scales: {
+        xAxes: [{
+          gridLines: false,
+          scaleLabel: false,
+          ticks: {
+            display: false
           }
-        },
-        scales: {
-          xAxes: [{
-            gridLines: false,
-            scaleLabel: false,
-            ticks: {
-              display: false
-            }
-          }],
-          yAxes: [{
-            gridLines: false,
-            scaleLabel: false,
-            ticks: {
-              display: false,
+        }],
+        yAxes: [{
+          gridLines: false,
+          scaleLabel: false,
+          ticks: {
+            display: false,
               // Avoid getting the graph line cut of at the top of the canvas.
               // Chart.js bug link: https://github.com/chartjs/Chart.js/issues/4790
               suggestedMax: max
@@ -101,7 +101,7 @@
       };
     }
 
-function generateOptions(dataType, labels, dataset){
+    function generateOptions(dataType, labels, dataset){
   // Dataset options
   var trendsData = {
     // Generate the labels on the X axis.
@@ -147,25 +147,25 @@ function generateOptions(dataType, labels, dataset){
     }];
 
     trendsOptions.scales.yAxes = [{
-        ticks: {
-          min: 0,
-          max: max,
-          callback: function (tick, index, ticks) {
-            if (tick === 0) {
-              return tick;
-            }
+      ticks: {
+        min: 0,
+        max: max,
+        callback: function (tick, index, ticks) {
+          if (tick === 0) {
+            return tick;
+          }
             // Format the amounts using units/s
             return tick >= 10**window.exponent ? Math.round(tick/10**window.exponent) + ' ' + unit() + '/s' : '';
           }
         }
       }];
 
-    trendsOptions.tooltips.callbacks.label = function(tooltipItem, data) {
+      trendsOptions.tooltips.callbacks.label = function(tooltipItem, data) {
         var d = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
         return (d/(10**window.exponent)).toFixed(2) +  ' ' + unit() +'/s';
-    }
+      }
 
-  } else if (dataType == 2){
+    } else if (dataType == 2){
     // block time graph
     trendsData.datasets = [{
       label: 'Average Time Per Block',
@@ -183,13 +183,13 @@ function generateOptions(dataType, labels, dataset){
 
     // scale y axis
     trendsOptions.scales.yAxes = [{
-        ticks: {
-          min: 0,
-          max: 25,
-          callback: function (tick, index, ticks) {
-            if (tick === 0) {
-              return tick;
-            }
+      ticks: {
+        min: 0,
+        max: 25,
+        callback: function (tick, index, ticks) {
+          if (tick === 0) {
+            return tick;
+          }
             // Format the amounts using TH/s
             return tick + ' s';
           }
@@ -197,10 +197,10 @@ function generateOptions(dataType, labels, dataset){
       }];
 
       trendsOptions.tooltips.callbacks.label = function(tooltipItem, data) {
-            var d = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-            return (d).toFixed(2) +  ' seconds';
+        var d = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+        return (d).toFixed(2) +  ' seconds';
       }
-  } else if (dataType == 3){
+    } else if (dataType == 3){
     // difficulty graph
     var tentativeMax = Math.max.apply(null, dataset) * 1.3;
     var pow = Math.floor(Math.log10(tentativeMax));
@@ -222,24 +222,24 @@ function generateOptions(dataType, labels, dataset){
 
     // scale y axis
     trendsOptions.scales.yAxes = [{
-        ticks: {
-          min: 0,
-          max: max,
-          callback: function (tick, index, ticks) {
-            if (tick === 0) {
-              return 0;
-            }
+      ticks: {
+        min: 0,
+        max: max,
+        callback: function (tick, index, ticks) {
+          if (tick === 0) {
+            return 0;
+          }
             // Format the amounts using TH/s
             return tick >= 10**window.exponent ? Math.round(tick/10**window.exponent) + ' ' +  unit() : '';
           }
         }
       }];
 
-    trendsOptions.tooltips.callbacks.label = function(tooltipItem, data) {
+      trendsOptions.tooltips.callbacks.label = function(tooltipItem, data) {
         var d = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
         return (d/(10**window.exponent)).toFixed(2) +  ' ' + unit();
+      }
     }
-  }
 
-  return [trendsData, trendsOptions]; 
-}
+    return [trendsData, trendsOptions]; 
+  }

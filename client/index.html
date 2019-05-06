@@ -12,6 +12,13 @@
       <link rel="stylesheet" id="main-stylesheet" data-version="1.1.0" href="styles/shards-dashboards.1.1.0.min.css">
       <link rel="stylesheet" href="styles/extras.1.1.0.min.css">
       <script async defer src="https://buttons.github.io/buttons.js"></script>
+      <link rel="apple-touch-icon" sizes="180x180" href="images/favicons/apple-touch-icon.png">
+      <link rel="icon" type="image/png" sizes="32x32" href="images/favicons/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="images/favicons/favicon-16x16.png">
+      <link rel="manifest" href="images/favicons/site.webmanifest">
+      <link rel="mask-icon" href="images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+      <meta name="msapplication-TileColor" content="#da532c">
+      <meta name="theme-color" content="#ffffff">
     </head>
     <body class="h-100">
       <div class="container-fluid">
@@ -22,7 +29,7 @@
             <nav class="navbar align-items-stretch navbar-light bg-white flex-md-nowrap border-bottom p-0">
               <a class="navbar-brand w-100 mr-0" href="#" style="line-height: 25px;">
                 <div class="d-table m-auto">
-                  <img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;" src="images/shards-dashboards-logo.svg" alt="Shards Dashboard">
+                  <img id="main-logo" class="d-inline-block align-top mr-1" style="max-width: 25px;" src="images/logo.png" alt="Chainwatch">
                   <span class="d-none d-md-inline ml-1">Chainwatch Dashboard</span>
                 </div>
               </a>
@@ -72,7 +79,7 @@
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                       <img class="user-avatar rounded-circle mr-2" src="images/avatars/ethereum.png" alt="User Avatar">
-                      <span class="d-none d-md-inline-block network-name">Network: NETWORK-NAME</span>
+                      <span class="d-none d-md-inline-block network-name">Network: ___</span>
                     </a>
                     
                     <div class="dropdown-menu dropdown-menu-small">
@@ -88,13 +95,19 @@
                 </nav>
               </nav>
             </div>
-            <!-- / .main-navbar -->
+            <!-- MAIN CONTENT -->
             <div class="main-content-container container-fluid px-4">
+              <!-- Loading overlay -->
+              <div id="loader-wrapper">
+                    <div id="loader"></div>
+                   <div class="loader-section section-left"></div>
+                    <div class="loader-section section-right"></div>
+              </div>
               <!-- Page Header -->
               <div class="page-header row no-gutters py-4">
                 <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
                   <span class="text-uppercase page-subtitle">Dashboard</span>
-                  <h3 class="page-title network-name">NETWORK-NAME Overview</h3>
+                  <h3 class="page-title network-name">___ Overview</h3>
                 </div>
               </div>
               <!-- End Page Header -->
@@ -228,7 +241,7 @@
               </div>
             </div>
             <footer class="main-footer d-flex p-2 px-3 bg-white border-top">
-              <span class="copyright ml-auto my-auto mr-2 network-name">Chainwatch – Network: NETWORK-NAME
+              <span class="copyright ml-auto my-auto mr-2 network-name">Chainwatch – Network: ___
               </span>
             </footer>
           </main>
@@ -240,6 +253,9 @@
       <script src="scripts/moment.min.js"></script> 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+
+      <link rel="stylesheet" type="text/css" href="styles/loading.css" />
+      <script src="scripts/modernizr-2.6.2.min.js"></script>
 
       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
       <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
