@@ -37,7 +37,7 @@ var trendsOptions = {
       yAxes: "NOT-SET",
     },
     animation: {
-      duration: 1000
+      duration: 500
     },
     hover: {
       mode: 'nearest',
@@ -51,7 +51,7 @@ var trendsOptions = {
         title: function(tooltipItem, data) {
             // process dates
             var datestring = data.labels[tooltipItem[0].index];
-            return formDateTitle(datestring);
+            return moment(datestring).format('MMM D, hh:mm A');
           },
           label: function(tooltipItem, data) {
             return "NOT-SET";
@@ -102,7 +102,7 @@ var trendsOptions = {
       };
     }
 
-    function generateOptions(dataType, labels, dataset){
+    function generateOptions(dataType, labels, dataset, max){
   // Dataset options
   var trendsData = {
     // Generate the labels on the X axis.
@@ -113,7 +113,6 @@ var trendsOptions = {
   if(!fullRange){
     // general scale labeling
     var duration = moment.duration(datetimeEnd.diff(datetimeStart));
-    console.log(duration.asDays());
     if(duration.asDays() >= 4){
       trendsOptions.scales.xAxes[0].time.unit="day";
       trendsOptions.scales.xAxes[0].time.unitStepSize = 1;
@@ -129,10 +128,6 @@ var trendsOptions = {
   }
 
   if(dataType == 1){
-    var tentativeMax = Math.max.apply(null, dataset) * 1.3;
-    var pow = Math.floor(Math.log10(tentativeMax));
-    var max = Math.ceil(tentativeMax/(10**pow)) * (10**pow);
-
     trendsData.datasets = [{
       label: 'Network Hashrate',
       fill: 'start',
@@ -203,9 +198,6 @@ var trendsOptions = {
       }
     } else if (dataType == 3){
     // difficulty graph
-    var tentativeMax = Math.max.apply(null, dataset) * 1.3;
-    var pow = Math.floor(Math.log10(tentativeMax));
-    var max = Math.ceil(tentativeMax/(10**pow)) * (10**pow);
 
     trendsData.datasets = [{
       label: 'Network Difficulty',

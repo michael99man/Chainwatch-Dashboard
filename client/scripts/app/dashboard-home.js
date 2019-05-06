@@ -10,7 +10,8 @@ window.network = "ethereum";
 window.exponent = 12;
 
 window.statistics = {};
-window.reorgs = {};
+window.numForked = {};
+window.maxes = {};
 
 const stats_collection_rate = 20;
 
@@ -44,12 +45,15 @@ $(document).ready(function () {
     console.log(stats);
     window.statistics[window.network] = stats;
 
-    $.ajax({url: "http://chainwatch.info/api/reorg_events?network=ethereum", success: function(reorg){
+    $.ajax({url: "http://chainwatch.info/api/numForked?network=ethereum", success: function(obj){
       //console.log(reorg);
-      window.reorgs[window.network] = reorg;
+      window.numForked[window.network] = obj["numForked"];
 
        // draw the dashboard
        $(document).ready(function () {
+        // remove loading wheel
+        $(".main-content-container").addClass("loaded");
+
          loadData();
        });
    }});
@@ -59,20 +63,17 @@ $(document).ready(function () {
   $.ajax({url: "http://chainwatch.info/api/statistics?network=ropsten", success: function(stats){
     window.statistics["ropsten"] = stats;
   }});
-  /*
-  $.ajax({url: "http://chainwatch.info/api/reorg_events?network=ropsten", success: function(reorg){
-    window.reorgs["ropsten"] = reorg;
-  }});*/
 
+  $.ajax({url: "http://chainwatch.info/api/numForked?network=ropsten", success: function(obj){
+      //console.log(reorg);
+      window.numForked["ropsten"] = obj["numForked"];
+   }});
 });
 
 
 function loadData(){
   console.log("Initializing");
   const STATS = window.statistics[window.network];
-
-  // remove loading wheel
-  $(".main-content-container").addClass("loaded")
 
   // SET:
   // window.statistics
@@ -161,7 +162,7 @@ function loadData(){
 
   // change values of small stats
   // TODO
-  $('.count.forked').text("?");
+  $('.count.forked').text(window.numForked[window.network]);
   $('.count.hashrate').text(hashText);
   $('.count.blocktime').text(blockTime + " s");
   $('.count.minershare').text(Math.round(largestShare*100) + "%");
@@ -237,6 +238,7 @@ function loadData(){
   } 
   window.parsedData = parsedData;
 
+  computeMaxes();
   generateChart();
 }
 
@@ -253,24 +255,50 @@ function changeNetwork(){
   return false;
 }
 
-function convertDate(timestamp){
-  var d = new Date(timestamp);
-  return d.toLocaleString();
-}
-
-function formDateTicks(datestring){
-  var d = moment(datestring);
-  return d.format('MMM D');
-}
-
-function formDateTitle(datestring){
-  var d = moment(datestring);
-  return d.format('MMM D, hh:mm A');
-}
+function changeNetworkName(){
+   // replace instances of "___" with the actual network
+   var elements = $(".network-name");
+   var networkCap = window.network.charAt(0).toUpperCase() + window.network.slice(1)
+   for(var i=0; i<elements.length; i++){
+     var e = elements[i];
+     var newText = e.innerHTML.replace("Ethereum", "___");
+     newText = newText.replace("Ropsten", "___");
+     newText = newText.replace("___", networkCap);
+     e.innerHTML = newText;
+   }
+ }
 
 function unit(){
   if(window.exponent == 12) return "TH";
   return "MH";
+}
+
+function computeMaxes(){
+  var hashrate = [];
+  var difficulty = [];
+  var labels = [];
+
+  for(var i=0; i<window.parsedData.length; i++){
+    var entry = window.parsedData[i];
+    labels.push(entry.timestamp);
+    hashrate.push(entry.hashrate);
+    difficulty.push(entry.difficulty);
+  }
+
+  var smoothedHashrate = smooth(labels, hashrate, 200);
+  var smoothedDifficulty = smooth(labels, difficulty, 200);
+
+  var tentativeMaxH = Math.max.apply(null, smoothedHashrate.dataset) * 1.3;
+  var powH = Math.floor(Math.log10(tentativeMaxH));
+  var maxH = Math.ceil(tentativeMaxH/(10**(powH))) * (10**(powH));
+
+  var tentativeMaxD = Math.max.apply(null, smoothedDifficulty.dataset) * 1.3;
+  var powD = Math.floor(Math.log10(tentativeMaxD));
+  var maxD = Math.ceil(tentativeMaxD/(10**(powD))) * (10**(powD));
+
+  window.maxes[window.network] = {hashrateMax: maxH, difficultyMax: maxD, blockTimeMax: 25};
+  console.log("Largest Hashrate: ",tentativeMaxH/1.3, "Proposed Max:", maxH);
+  console.log("Largest Difficulty: ",tentativeMaxD/1.3, "Proposed Max:", maxD);
 }
 
 /* 1: hashrate, 2: blocktime, 3:difficulty */ 
@@ -309,8 +337,9 @@ function generateChart(){
     dataset = obj.dataset;
   }
 
+  var max = window.maxes[window.network][([0,"hashrateMax","blockTimeMax", "difficultyMax"][dataType])];
   // generate the options for this data type
-  var options = generateOptions(dataType, labels, dataset);
+  var options = generateOptions(dataType, labels, dataset, max);
   var trendsData = options[0];
   var trendsOptions = options[1];
 
@@ -341,7 +370,6 @@ function generateChart(){
 // smooths the dataset into approximately numPoints points
 function smooth(timestamps, dataset, numPoints){
   var windowSize = Math.round(dataset.length/numPoints);
-  console.log("Smoothing with window size: " + windowSize);
 
   var toMinimize = (dataset[0] > 10**window.exponent);
   var newDataset = [];
@@ -371,17 +399,4 @@ function smooth(timestamps, dataset, numPoints){
 
   return {timestamps:newTimestamps, dataset:newDataset};
 }
-
-function changeNetworkName(){
-   // replace instances of "___" with the actual network
-   var elements = $(".network-name");
-   var networkCap = window.network.charAt(0).toUpperCase() + window.network.slice(1)
-   for(var i=0; i<elements.length; i++){
-     var e = elements[i];
-     var newText = e.innerHTML.replace("Ethereum", "___");
-     newText = newText.replace("Ropsten", "___");
-     newText = newText.replace("___", networkCap);
-     e.innerHTML = newText;
-   }
- }
 

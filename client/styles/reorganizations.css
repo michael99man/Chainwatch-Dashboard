@@ -1,0 +1,14 @@
+
+#table-wrapper {
+  max-height: 45vw;
+  overflow-y: auto
+}
+
+#reorg-header-table{
+	table-layout: fixed;
+}
+
+#reorg-table{
+	table-layout: fixed;
+}
+
