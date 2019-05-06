@@ -58,19 +58,15 @@ app.get('/numForked', async function(req, res){
 	
 	var numForked=0;
 	var i = results.length-1;
-	while(1){
+	while(i > 0){
+
 		if(Date.now() - new Date(results[i].detected).getTime() < (24 * 60 * 60 * 1000)){
 			numForked += results[i].numBlocks;
 		} else {
-			break;
+			i=0;
 		}
 		i--;
 	}
-
-
-	
-	console.log(results);
-	results.forEach(function (doc) {numForked += doc["numBlocks"];})
 	res.json({"numForked": numForked});
 });
 
