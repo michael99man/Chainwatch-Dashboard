@@ -40,6 +40,10 @@ app.get('/density_events', async function(req, res){
 });
 
 app.get('/statistics', async function(req, res){
+	var network = req.query.network;
+
+	// DO AVERAGING
+	
 	var data = await mongodb.collection("statistics").find().toArray();
 	res.json(data);
 });
