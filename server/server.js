@@ -30,7 +30,7 @@ app.get('/', function(req, res){
 
 app.get('/reorg_events', async function(req, res){
 	var network = req.query.network;
-	
+
 	var data = await mongodb.collection("reorg_events").find({"network":network}).toArray();
 	res.json(data);
 });
@@ -45,10 +45,18 @@ app.get('/density_events', async function(req, res){
 app.get('/statistics', async function(req, res){
 	var network = req.query.network;
 
-	// DO AVERAGING?
-	
 	var data = await mongodb.collection("statistics").find({"network":network}).toArray();
-	res.json(data);
+	res.json({"numForked": numForked, "statistics" : data});
+});
+
+app.get('/numForked', async function(req, res){
+	var network = req.query.network;
+
+	// calculate number of forked blocks in the last 24 hours
+	var results = await mongodb.collection("reorg_events").find({ $and: [{$where:function () { return Date.now() - this._id.getTimestamp() < (24 * 60 * 60 * 1000)  }}, {network: network}]  })
+	var numForked=0;
+	results.forEach(function (doc) {numForked += doc["numBlocks"];})
+	res.json({"numForked": numForked});
 });
 
 app.listen(port, () => console.log(`Chainwatch Server listening on port ${port}!`))

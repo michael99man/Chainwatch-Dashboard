@@ -44,15 +44,15 @@ $(document).ready(function () {
     console.log(stats);
     window.statistics[window.network] = stats;
 
-    //$.ajax({url: "http://chainwatch.info/api/reorg_events?network=etheruem", success: function(reorg){
+    $.ajax({url: "http://chainwatch.info/api/reorg_events?network=ethereum", success: function(reorg){
       //console.log(reorg);
-      //window.reorgs[window.network] = reorg;
+      window.reorgs[window.network] = reorg;
 
        // draw the dashboard
        $(document).ready(function () {
          loadData();
        });
-   //}});
+   }});
  }});
 
   // DL Ropsten stats in the background
