@@ -53,8 +53,23 @@ app.get('/numForked', async function(req, res){
 	var network = req.query.network;
 
 	// calculate number of forked blocks in the last 24 hours
-	var results = await mongodb.collection("reorg_events").find({ $and: [{$where:function () { return Date.now() - this._id.getTimestamp() < (24 * 60 * 60 * 1000)  }}, {"network": network}]  })
+	//var results = await mongodb.collection("reorg_events").find({ $and: [{$where:function () { return Date.now() - this._id.getTimestamp() <   }}, {"network": network}]  }).toArray();
+	var results = await mongodb.collection("reorg_events").find({"network":network}).toArray();
+	
 	var numForked=0;
+	var i = results.length-1;
+	while(1){
+		if(Date.now() - new Date(results[i].detected).getTime() < (24 * 60 * 60 * 1000)){
+			numForked += results[i].numBlocks;
+		} else {
+			break;
+		}
+		i--;
+	}
+
+
+	
+	console.log(results);
 	results.forEach(function (doc) {numForked += doc["numBlocks"];})
 	res.json({"numForked": numForked});
 });
