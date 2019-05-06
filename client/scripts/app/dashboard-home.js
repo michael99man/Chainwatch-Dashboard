@@ -15,7 +15,7 @@ window.reorgs = {};
 const stats_collection_rate = 20;
 
 // initialize with ethereum
-$.ajax({url: "http://chainwatch.info/api/statistics?=ethereum", success: function(stats){
+$.ajax({url: "http://chainwatch.info/api/statistics?network=ethereum", success: function(stats){
   console.log(stats);
   window.statistics[window.network] = stats;
 
@@ -35,9 +35,10 @@ $.ajax({url: "http://chainwatch.info/api/statistics?=ethereum", success: functio
 $.ajax({url: "http://chainwatch.info/api/statistics?network=ropsten", success: function(stats){
   window.statistics["ropsten"] = stats;
 }});
+/*
 $.ajax({url: "http://chainwatch.info/api/reorg_events?network=ropsten", success: function(reorg){
   window.reorgs["ropsten"] = reorg;
-}});
+}});*/
 
 $('#chart-select').change(generateChart);
 
