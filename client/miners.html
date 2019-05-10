@@ -58,6 +58,12 @@
                   <span>Miner Density</span>
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html">
+                  <i class="material-icons">info</i>
+                  <span>About Chainwatch</span>
+                </a>
+              </li>
             </ul>
           </div>
         </aside>
@@ -69,103 +75,148 @@
               <ul class="navbar-nav border-left flex-row ">
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <img class="user-avatar rounded-circle mr-2" src="images/avatars/ethereum.png" alt="User Avatar">
+                    <img class="user-avatar rounded-circle mr-2" src="images/avatars/default.png" alt="User Avatar">
                     <span class="d-none d-md-inline-block network-name">Network: ___</span>
                   </a>
 
                   <div class="dropdown-menu dropdown-menu-small">
                     <a class="dropdown-item text-danger" href="#" onclick="changeNetwork()">
-                      <i class="material-icons text-danger ropsten">&#xE879;</i> Change Network</a>
-                    </div>
-                  </li>
-                </ul>
-                <nav class="nav">
-                  <a href="#" class="nav-link nav-link-icon toggle-sidebar d-md-inline d-lg-none text-center border-left" data-toggle="collapse" data-target=".header-navbar" aria-expanded="false" aria-controls="header-navbar">
-                    <i class="material-icons">&#xE5D2;</i>
-                  </a>
-                </nav>
+                      <i class="material-icons text-danger ropsten">&#xE879;</i> Change Network
+                    </a>
+                  </div>
+                </li>
+              </ul>
+              <nav class="nav">
+                <a href="#" class="nav-link nav-link-icon toggle-sidebar d-md-inline d-lg-none text-center border-left" data-toggle="collapse" data-target=".header-navbar" aria-expanded="false" aria-controls="header-navbar">
+                  <i class="material-icons">&#xE5D2;</i>
+                </a>
               </nav>
+            </nav>
+          </div>
+          <!-- MAIN CONTENT -->
+          <!-- / .main-navbar -->
+          <div class="main-content-container container-fluid px-4">
+            <!-- Loading overlay -->
+            <div id="loader-wrapper">
+              <div id="loader"></div>
+              <div class="loader-section section-left"></div>
+              <div class="loader-section section-right"></div>
             </div>
-            <!-- MAIN CONTENT -->
-            <!-- / .main-navbar -->
-            <div class="main-content-container container-fluid px-4">
-              <!-- Loading overlay -->
-              <div id="loader-wrapper">
-                <div id="loader"></div>
-                <div class="loader-section section-left"></div>
-                <div class="loader-section section-right"></div>
+            <!-- Page Header -->
+            <div class="page-header row no-gutters py-4">
+              <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                <span class="text-uppercase page-subtitle">Overview</span>
+                <h3 class="page-title">Miner Density</h3>
               </div>
-              <!-- Page Header -->
-              <div class="page-header row no-gutters py-4">
-                <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-                  <span class="text-uppercase page-subtitle">Overview</span>
-                  <h3 class="page-title">Chain Reorganizations</h3>
+            </div>
+            <!-- End Page Header -->
+
+
+
+            <!-- CONTENT --> 
+
+            <div class="row" style="height: 60vh; margin-bottom: 30px;">
+              <div class="col-4">
+                <div class="card card-small" style="margin-bottom: 0; height: 100%">
+                  <div class="card-header border-bottom">
+                    <div class="row">
+                      <h6 class="m-0 col-12 col-sm-8">Known Miners</h6>
+                    </div>
+                  </div>
+
+                  <div class="card-body p-0 pb-3 text-center"> 
+
+                    <div class="card-body p-0 pb-3 text-center" id="table-wrapper">
+                      <table class="table mb-0" id="miners-table">
+                        <thead><tr>
+                          <th scope="col" class="border-0">Address</th>
+                          <th scope="col" class="border-0">Mining Pool</th>
+                        </tr></thead>
+                        <tbody>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <!-- End Page Header -->
-              <!-- Default Light Table -->
-              <div class="row">
-                <div class="col-6">
-                  <div class="card card-small">
-                    <div class="card-header border-bottom">
-                      <h6 class="m-0">Network Trends</h6>
+
+              <div class="col-8">
+
+                <div class="card card-small" style="margin-bottom: 0; height: 100%">
+                  <div class="card-header border-bottom">
+                    <h6 class="m-0">Top 5 Miners: Hashrate Share</h6>
+                  </div>
+                  <div class="card-body pt-0">
+                    <div class="row border-bottom py-2 bg-light">
+                      <div class="col-12 col-sm-6 d-flex mb-6 mb-sm-0" style="height: 19px">
+                      </div>
+                      <div class="col-12 col-sm-4">
+                      </div>
                     </div>
                     <div class="card-body pt-0">
-                      <div style="height: 45vh">
-                        <canvas height="130" style="max-width: 100% !important;" class="forked-blocks-graph"></canvas>
+                      <div style="height: 46vh">
+                        <canvas height="130" style="max-width: 100% !important;" class="miner-density-graph"></canvas>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-6">
-                  <div class="card card-small mb-4">
-                    <div class="card-header border-bottom">
-                      <h6 class="m-0">Forked Blocks</h6>
-                    </div>
-
-                    <div class="card-body p-0 pb-3 text-center"> 
-                      <table class="table mb-0" id="reorg-header-table">
-                        <thead class="bg-light">
-                          <tr>
-                            <th scope="col" class="border-0">Block Height</th>
-                            <th scope="col" class="border-0">Date Detected</th>
-                            <th scope="col" class="border-0"># of Blocks</th>
-                            <th scope="col" class="border-0">Block Data</th>
-                          </tr>
-                        </thead>
-                      </table>
-                      <div class="card-body p-0 pb-3 text-center" id="table-wrapper">
-                        <table class="table mb-0" id="reorg-table">
-                          <tbody>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- End Default Light Table -->
-
-
               </div>
-              <footer class="main-footer d-flex p-2 px-3 bg-white border-top">
-                <span class="copyright ml-auto my-auto mr-2 network-name">Chainwatch – Network: ___
-                </span>
-              </footer>
-            </main>
+            </div>
+
+            <div class="row" style="min-height: 20vh">
+              <div class="col-12">
+                <div class="card card-small mb-4">
+                  <div class="card-header border-bottom">
+                    <div class="row">
+                      <h6 class="m-0 col-12 col-sm-8">Miner Density Events</h6>
+                    </div>
+                  </div>
+
+                  <div class="card-body p-0 pb-3 text-center"> 
+
+                    <div class="card-body p-0 pb-3 text-center" id="table-wrapper">
+                      <table class="table mb-0" id="miners-table">
+                        <thead><tr>
+                          <th scope="col" class="border-0">Address</th>
+                          <th scope="col" class="border-0">Date Detected</th>
+                          <th scope="col" class="border-0">Block Range</th>
+                          <th scope="col" class="border-0">Percentage</th>
+                        </tr></thead>
+                        <tbody id="density-event-table">
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-        <script src="scripts/moment.min.js"></script> 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+          <footer class="main-footer d-flex p-2 px-3 bg-white border-top">
+            <span class="copyright ml-auto my-auto mr-2 network-name">Chainwatch – Network: ___
+            </span>
+          </footer>
+        </main>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="scripts/moment.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
-        <link rel="stylesheet" type="text/css" href="styles/loading.css" />
-        <script src="scripts/modernizr-2.6.2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles/loading.css" />
+    <script src="scripts/modernizr-2.6.2.min.js"></script>
 
-        <script src="https://unpkg.com/shards-ui@latest/dist/js/shards.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sharrre/2.0.1/jquery.sharrre.min.js"></script>
-        <script src="scripts/extras.1.1.0.min.js"></script>
-        <script src="scripts/shards-dashboards.1.1.0.js"></script>
-      </body>
-      </html>
+
+
+    <script src="scripts/app/miners.js"></script>
+    <script src="scripts/app/commons.js"></script>
+
+    <script src="https://unpkg.com/shards-ui@latest/dist/js/shards.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sharrre/2.0.1/jquery.sharrre.min.js"></script>
+    <script src="scripts/extras.1.1.0.min.js"></script>
+    <script src="scripts/shards-dashboards.1.1.0.js"></script>
+  </body>
+  </html>

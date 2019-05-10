@@ -19,6 +19,17 @@
     <link rel="mask-icon" href="images/favicons/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
+
+    <style>
+
+      #modal-table td, #modal-table th{
+        border: 1px solid #dee2e6 !important;
+      }
+
+      #block-heights td{
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body class="h-100">
     <div class="container-fluid">
@@ -58,6 +69,12 @@
                   <span>Miner Density</span>
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="about.html">
+                  <i class="material-icons">info</i>
+                  <span>About Chainwatch</span>
+                </a>
+              </li>
             </ul>
           </div>
         </aside>
@@ -69,7 +86,7 @@
               <ul class="navbar-nav border-left flex-row ">
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <img class="user-avatar rounded-circle mr-2" src="images/avatars/ethereum.png" alt="User Avatar">
+                    <img class="user-avatar rounded-circle mr-2" src="images/avatars/default.png" alt="User Avatar">
                     <span class="d-none d-md-inline-block network-name">Network: ___</span>
                   </a>
 
@@ -86,87 +103,150 @@
                 </nav>
               </nav>
             </div>
-            <!-- MAIN CONTENT -->
-            <!-- / .main-navbar -->
-            <div class="main-content-container container-fluid px-4">
-              <!-- Loading overlay -->
-              <div id="loader-wrapper">
-                <div id="loader"></div>
-                <div class="loader-section section-left"></div>
-                <div class="loader-section section-right"></div>
-              </div>
-              <!-- Page Header -->
-              <div class="page-header row no-gutters py-4">
-                <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-                  <span class="text-uppercase page-subtitle">Overview</span>
-                  <h3 class="page-title">Chain Reorganizations</h3>
-                </div>
-              </div>
-              <!-- End Page Header -->
-              <!-- Default Light Table -->
-              <div class="row">
-                <div class="col-6">
-                  <div class="card card-small">
-                    <div class="card-header border-bottom">
-                      <h6 class="m-0">Network Trends</h6>
-                    </div>
-                    <div class="card-body pt-0">
-                      <div style="height: 45vh">
-                        <canvas height="130" style="max-width: 100% !important;" class="forked-blocks-graph"></canvas>
-                      </div>
-                    </div>
+            
+            <!-- MODAL OVERLAY -->
+            <div class="modal fade" id="modal-container" tabindex="-1" role="dialog" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 680px">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">Reorganized Blocks</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
                   </div>
-                </div>
-                <div class="col-6">
-                  <div class="card card-small mb-4">
-                    <div class="card-header border-bottom">
-                      <h6 class="m-0">Forked Blocks</h6>
+                  <div class="modal-body" id="model-body" style="overflow-x: scroll; ">
+                    <table class="table mb-0 col-sm-4" id="modal-table">
+                      <thead class="bg-light">
+                        <tr id="block-heights">
+                          <th scope="col">Block Height</th>
+                        </tr>
+                        <tr id="old-hashes">
+                          <th scope="col">Old Hash</th>
+                          <div>
+                          </div>
+                        </tr><tr
+                        id="new-hashes">
+                        <th scope="col">New Hash</th>
+                        <div>
+                        </div>
+                      </tr><tr
+                      id="old-miners">
+                      <th scope="col">Old Miner</th>
+                      <div>
+                      </div>
+                    </tr><tr
+                    id="new-miners">
+                    <th scope="col">New Miner</th>
+                    <div>
                     </div>
-
-                    <div class="card-body p-0 pb-3 text-center"> 
-                      <table class="table mb-0" id="reorg-header-table">
-                        <thead class="bg-light">
-                          <tr>
-                            <th scope="col" class="border-0">Block Height</th>
-                            <th scope="col" class="border-0">Date Detected</th>
-                            <th scope="col" class="border-0"># of Blocks</th>
-                            <th scope="col" class="border-0">Block Data</th>
-                          </tr>
-                        </thead>
+                  </tr>
+                </thead>
+              </table>
+                    <!--
+                    <div class="card-body p-0 pb-3 text-center" id="table-wrapper">
+                      <table class="table mb-0" id="modal-table" style="width:100%">
+                        <tbody>
+                        </tbody>
                       </table>
-                      <div class="card-body p-0 pb-3 text-center" id="table-wrapper">
-                        <table class="table mb-0" id="reorg-table">
-                          <tbody>
-                          </tbody>
-                        </table>
-                      </div>
+                    </div>
+                  -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MAIN CONTENT -->
+
+          <!-- / .main-navbar -->
+          <div class="main-content-container container-fluid px-4">
+            <!-- Loading overlay -->
+            <div id="loader-wrapper">
+              <div id="loader"></div>
+              <div class="loader-section section-left"></div>
+              <div class="loader-section section-right"></div>
+            </div>
+            <!-- Page Header -->
+            <div class="page-header row no-gutters py-4">
+              <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                <span class="text-uppercase page-subtitle">Overview</span>
+                <h3 class="page-title">Chain Reorganizations</h3>
+              </div>
+            </div>
+            <!-- End Page Header -->
+            <!-- Default Light Table -->
+            <div class="row" style="padding-bottom: 30px;">
+              <div class="col-6">
+                <div class="card card-small" style="height:100%;">
+                  <div class="card-header border-bottom">
+                    <h6 class="m-0">Network Trends</h6>
+                  </div>
+                  <div class="card-body pt-0">
+                    <div style="height: 100%">
+                      <canvas height="130" style="max-width: 100% !important;" class="forked-blocks-graph"></canvas>
                     </div>
                   </div>
                 </div>
-                <!-- End Default Light Table -->
-
-
               </div>
-              <footer class="main-footer d-flex p-2 px-3 bg-white border-top">
-                <span class="copyright ml-auto my-auto mr-2 network-name">Chainwatch – Network: ___
-                </span>
-              </footer>
-            </main>
+              <div class="col-6">
+                <div class="card card-small" style="height: 100%">
+                  <div class="card-header border-bottom">
+                    <div class="row">
+                      <h6 class="m-0 col-12 col-sm-8">Forked Blocks</h6>
+                      <div class="col-12 col-sm-4">
+                        <div style="float:right">
+                          Minimum Length: 
+                          <input id="min-block-select" type="number" name="quantity" min="1" max="5" value="1">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card-body p-0 pb-3 text-center"> 
+                    <table class="table mb-0" id="reorg-header-table">
+                      <thead class="bg-light">
+                        <tr>
+                          <th scope="col" class="border-0">Block Height</th>
+                          <th scope="col" class="border-0">Date Detected</th>
+                          <th scope="col" class="border-0"># of Blocks</th>
+                          <th scope="col" class="border-0">Block Data</th>
+                        </tr>
+                      </thead>
+                    </table>
+                    <div class="card-body p-0 pb-3 text-center" id="table-wrapper">
+                      <table class="table mb-0" id="reorg-table">
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Default Light Table -->
+
+
+            </div>
           </div>
-        </div>
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-        <script src="scripts/moment.min.js"></script> 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+          <footer class="main-footer d-flex p-2 px-3 bg-white border-top">
+            <span class="copyright ml-auto my-auto mr-2 network-name">Chainwatch – Network: ___
+            </span>
+          </footer>
+        </main>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="scripts/moment.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
-        <link rel="stylesheet" type="text/css" href="styles/loading.css" />
-        <script src="scripts/modernizr-2.6.2.min.js"></script>
+    <script src="scripts/app/commons.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles/loading.css" />
+    <script src="scripts/modernizr-2.6.2.min.js"></script>
 
-        <script src="https://unpkg.com/shards-ui@latest/dist/js/shards.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sharrre/2.0.1/jquery.sharrre.min.js"></script>
-        <script src="scripts/extras.1.1.0.min.js"></script>
-        <script src="scripts/shards-dashboards.1.1.0.js"></script>
-        <script src="scripts/app/reorganizations.js"></script>
-      </body>
-      </html>
+    <script src="https://unpkg.com/shards-ui@latest/dist/js/shards.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sharrre/2.0.1/jquery.sharrre.min.js"></script>
+    <script src="scripts/extras.1.1.0.min.js"></script>
+    <script src="scripts/shards-dashboards.1.1.0.js"></script>
+    <script src="scripts/app/reorganizations.js"></script>
+  </body>
+  </html>

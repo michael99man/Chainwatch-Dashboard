@@ -1,24 +1,22 @@
-/*
-|--------------------------------------------------------------------------
-| Shards Dashboards: Blog Overview Template
-|--------------------------------------------------------------------------
-*/
-
 'use strict';
-
-window.network = "ethereum";
-window.exponent = 12;
 
 window.reorg_events = {};
 
 $(document).ready(function () {
+  if(sessionStorage.network == undefined) sessionStorage.network = "ethereum";
+
   changeNetworkName();
+
+  // draw table again on change
+  $('#min-block-select').on('input', function() {
+    generateTable();
+  });
 
   /* ----- DOWNLOAD DATA ----- */
   // initialize with ethereum
 
-  $.ajax({url: "http://chainwatch.info/api/reorg_events?network=ethereum", success: function(obj){
-    window.reorg_events["ethereum"] = obj;
+  $.ajax({url: "http://chainwatch.info/api/reorg_events?network=" + sessionStorage.network, success: function(obj){
+    window.reorg_events[sessionStorage.network] = obj;
     // draw the dashboard
     $(document).ready(function () {
       // remove loading wheel
@@ -28,31 +26,16 @@ $(document).ready(function () {
   }});
 
   // Download Ropsten stats in the background
-  $.ajax({url: "http://chainwatch.info/api/reorg_events?network=ropsten", success: function(obj){
-    window.reorg_events["ropsten"] = obj;
+  $.ajax({url: "http://chainwatch.info/api/reorg_events?network=" + other(), success: function(obj){
+    window.reorg_events[other()] = obj;
   }});
 });
 
-// populates data tables
+// populates data tables and graph
 function loadData(){
+  generateTable();
 
-  var dataset = window.reorg_events[window.network];
-  console.log(dataset);
-  var rows = "";
-  for(var i=dataset.length-1; i>=dataset.length-100; i--){
-    var row = '<tr>';
-    var entry = dataset[i];
-    row += wrapRow(entry.start +"-" +entry.end);
-    row += wrapRow(entry.detected);
-    row += wrapRow(entry.numBlocks);
-    row += wrapRow("Block Data");
-    row += "</tr>";
-    rows += row;
-  }
-  $('#reorg-table tr').remove();
-  $('#reorg-table tbody').after(rows);
-
-
+  var dataset = window.reorg_events[sessionStorage.network];
   var tallySet = {};
 
   // prep data for graph
@@ -78,51 +61,80 @@ function loadData(){
       numForked.push(tallySet[d]);
     }
   }
-
-  console.log(dateLabels);
-  console.log(numForked);
-
   generateChart(dateLabels, numForked);
 }
 
-// GRAPH OF FORKED BLOCKS OVER TIME
+/* generate the table */
+function generateTable(){
+  var dataset = window.reorg_events[sessionStorage.network];
+  var minimum = parseInt($('#min-block-select').val());
 
+  var rows = "";
+  var included = 0;
+  for(var i=dataset.length-1; i>=0; i--){
+    var row = '<tr>';
+    var entry = dataset[i];
+
+    if(entry.numBlocks < minimum) continue;
+
+    row += wrapRow(entry.start == entry.end ? entry.end : entry.start +"-" +entry.end);
+
+    var date = moment(entry.detected).format("MMM DD, hh:mm A");
+
+    row += wrapRow(date);
+    row += wrapRow(entry.numBlocks);
+    row += wrapRow("<a onclick='generateModal(" + i + ")' href='#'>See Data</a>");
+    row += "</tr>";
+    rows += row;
+    included++;
+    if(included >= 100) break;
+  }
+
+  $('#reorg-table tr').remove();
+  $('#reorg-table tbody').after(rows);
+}
+
+/* generate the modal view */
+function generateModal(index){
+  console.log("Generating modal");
+  var entry = window.reorg_events[sessionStorage.network][index];
+  console.log(entry);
+
+  var blocks = entry.blocks;
+  var blockHeights = "";
+  var oldHashes = "";
+  var newHashes = "";
+  var oldMiners = "";
+  var newMiners = "";
+
+  for(var b=entry.start; b<=entry.end; b++){
+    blockHeights += wrapRow(b);
+    oldHashes += wrapRow(blocks[b].old.hash);
+    oldMiners += wrapRow(blocks[b].old.miner);
+    newHashes += wrapRow(getMinerNameOrFull(blocks[b].new.hash));
+    newMiners += wrapRow(getMinerNameOrFull(blocks[b].new.miner));
+  }
+
+  $('#block-heights td').remove();
+  $('#block-heights th').after(blockHeights);
+
+  $('#old-hashes td').remove();
+  $('#old-hashes th').after(oldHashes);
+  $('#new-hashes td').remove();
+  $('#new-hashes th').after(newHashes);
+
+  $('#old-miners td').remove();
+  $('#old-miners th').after(oldMiners);
+  $('#new-miners td').remove();
+  $('#new-miners th').after(newMiners);
+
+  $('#modal-container').modal('show');
+}
+
+// GRAPH OF FORKED BLOCKS OVER TIME
 function wrapRow(data){
   return '<td>' + data +'</td>';
 }
-
-function changeNetwork(){
-  if(window.network == "ropsten"){
-    window.network = "ethereum";
-    window.exponent = 12;
-  } else {
-    window.network="ropsten";
-    window.exponent = 6;
-  }
-  changeNetworkName();
-  loadData();
-  return false;
-}
-
-function changeNetworkName(){
-   // replace instances of "___" with the actual network
-   var elements = $(".network-name");
-   var networkCap = window.network.charAt(0).toUpperCase() + window.network.slice(1)
-   for(var i=0; i<elements.length; i++){
-     var e = elements[i];
-     var newText = e.innerHTML.replace("Ethereum", "___");
-     newText = newText.replace("Ropsten", "___");
-     newText = newText.replace("___", networkCap);
-     e.innerHTML = newText;
-   }
- }
-
- function unit(){
-   if(window.exponent == 12) return "TH";
-   return "MH";
- }
-
-
 
 // generates the # forked blocks per day
 function generateChart(labels, dataset){
@@ -165,6 +177,10 @@ var trendsOptions = {
       xAxes: [{
         gridLines: false,
         type: "time",
+        ticks:{ 
+          autoSkip: true,
+          padding: 10
+        },
         time: {
           unit: "day",
           unitStepSize: 1,
@@ -210,24 +226,31 @@ var trendsOptions = {
           title: function(tooltipItem, data) {
             // process dates
             var datestring = data.labels[tooltipItem[0].index];
-            return moment(datestring).format('MMM D, hh:mm A');
+            return moment(datestring).format('MMM D');
           },
           label: function(tooltipItem, data) {
             var d = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
             return d + " Blocks";
+          },
+          labelColor: function(tooltipItem, chart) {
+            var index = tooltipItem.datasetIndex;
+            return {
+              borderColor: chart.data.datasets[index].borderColor,
+              backgroundColor: chart.data.datasets[index].backgroundColor
+            };
           }
         }
       }
     };
 
 
-  var trendsCTX = document.getElementsByClassName('forked-blocks-graph')[0];
+    var trendsCTX = document.getElementsByClassName('forked-blocks-graph')[0];
 
   // clear on the case we switched networks!
   if(window.TrendsChart != undefined){
     window.TrendsChart.destroy();
   }
-  
+
   // Generate the Analytics Overview chart.
   window.TrendsChart = new Chart(trendsCTX, {
     type: 'LineWithLine',
@@ -240,8 +263,7 @@ var trendsOptions = {
 }
 
 
- /* WHO IS GETTING REORG'd?!
-
+function tallyVictims(){
   // analyze reorgs by Miner
 
   var oldTally = {};
@@ -267,4 +289,5 @@ var trendsOptions = {
   }
 
   console.log(oldTally);
-  console.log(newTally);*/
+  console.log(newTally);
+}

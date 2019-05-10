@@ -1,13 +1,4 @@
-/*
-|--------------------------------------------------------------------------
-| Shards Dashboards: Blog Overview Template
-|--------------------------------------------------------------------------
-*/
-
 'use strict';
-
-window.network = "ethereum";
-window.exponent = 12;
 
 window.statistics = {};
 window.numForked = {};
@@ -21,6 +12,7 @@ var datetimeStart = moment();
 var datetimeEnd = moment();
 
 $(document).ready(function () {
+  if(sessionStorage.network == undefined) sessionStorage.network = "ethereum";
   changeNetworkName();
 
   $('#chart-select').change(generateChart);
@@ -41,13 +33,13 @@ $(document).ready(function () {
 
   /* ----- DOWNLOAD DATA ----- */
   // initialize with ethereum
-  $.ajax({url: "http://chainwatch.info/api/statistics?network=ethereum", success: function(stats){
+  $.ajax({url: "http://chainwatch.info/api/statistics?network=" +sessionStorage.network, success: function(stats){
     console.log(stats);
-    window.statistics[window.network] = stats;
+    window.statistics[sessionStorage.network] = stats;
 
-    $.ajax({url: "http://chainwatch.info/api/numForked?network=ethereum", success: function(obj){
+    $.ajax({url: "http://chainwatch.info/api/numForked?network=" + sessionStorage.network, success: function(obj){
       //console.log(reorg);
-      window.numForked[window.network] = obj["numForked"];
+      window.numForked[sessionStorage.network] = obj["numForked"];
 
        // draw the dashboard
        $(document).ready(function () {
@@ -59,21 +51,21 @@ $(document).ready(function () {
    }});
  }});
 
-  // DL Ropsten stats in the background
-  $.ajax({url: "http://chainwatch.info/api/statistics?network=ropsten", success: function(stats){
-    window.statistics["ropsten"] = stats;
+  // DL other stats in the background
+  $.ajax({url: "http://chainwatch.info/api/statistics?network=" + other(), success: function(stats){
+    window.statistics[other()] = stats;
   }});
 
-  $.ajax({url: "http://chainwatch.info/api/numForked?network=ropsten", success: function(obj){
+  $.ajax({url: "http://chainwatch.info/api/numForked?network=" + other(), success: function(obj){
       //console.log(reorg);
-      window.numForked["ropsten"] = obj["numForked"];
+      window.numForked[other()] = obj["numForked"];
    }});
 });
 
 
 function loadData(){
   console.log("Initializing");
-  const STATS = window.statistics[window.network];
+  const STATS = window.statistics[sessionStorage.network];
 
   // SET:
   // window.statistics
@@ -102,7 +94,7 @@ function loadData(){
   // calc averages throughout 24 hours 
   for(var i=STATS.length-1; i>=0; i--){
     var s = STATS[i];
-    if(s.network == network){
+    if(s.network == sessionStorage.network){
       if(latestStats == undefined) latestStats = s;
       hashrate_avg += s.hashrate;
       blocktime_avg += s.blockTime;
@@ -136,7 +128,7 @@ function loadData(){
   var ograte = hashrate_avg;
   console.log("Hashrate: " + ograte);
   // convert to TH/s
-  var hashrate = Math.round(ograte / (10**window.exponent));
+  var hashrate = Math.round(ograte / exponents[sessionStorage.network]);
   var hashText = hashrate + " " + unit() + "/s";
 
   // BLOCKTIME
@@ -158,11 +150,11 @@ function loadData(){
   console.log("Largest hashrate share: " + largestShare);
 
   // DIFFICULTY
-  var difficulty = Math.round(latestStats.difficulty/(10**window.exponent)) + " " + unit();
+  var difficulty = Math.round(latestStats.difficulty/exponents[sessionStorage.network]) + " " + unit();
 
   // change values of small stats
   // TODO
-  $('.count.forked').text(window.numForked[window.network]);
+  $('.count.forked').text(window.numForked[sessionStorage.network]);
   $('.count.hashrate').text(hashText);
   $('.count.blocktime').text(blockTime + " s");
   $('.count.minershare').text(Math.round(largestShare*100) + "%");
@@ -227,7 +219,7 @@ function loadData(){
   var parsedData = [];
   for(var i=0; i<STATS.length; i++){
     var s = STATS[i];
-    if(s.network == network){
+    if(s.network == sessionStorage.network){
       if(s.hasOwnProperty("hashRate")) { 
         var hash = s.hashRate;
       } else if(s.hasOwnProperty("hashrate")){
@@ -240,37 +232,6 @@ function loadData(){
 
   computeMaxes();
   generateChart();
-}
-
-function changeNetwork(){
-  if(window.network == "ropsten"){
-    window.network = "ethereum";
-    window.exponent = 12;
-  } else {
-    window.network="ropsten";
-    window.exponent = 6;
-  }
-  changeNetworkName();
-  loadData();
-  return false;
-}
-
-function changeNetworkName(){
-   // replace instances of "___" with the actual network
-   var elements = $(".network-name");
-   var networkCap = window.network.charAt(0).toUpperCase() + window.network.slice(1)
-   for(var i=0; i<elements.length; i++){
-     var e = elements[i];
-     var newText = e.innerHTML.replace("Ethereum", "___");
-     newText = newText.replace("Ropsten", "___");
-     newText = newText.replace("___", networkCap);
-     e.innerHTML = newText;
-   }
- }
-
-function unit(){
-  if(window.exponent == 12) return "TH";
-  return "MH";
 }
 
 function computeMaxes(){
@@ -296,7 +257,7 @@ function computeMaxes(){
   var powD = Math.floor(Math.log10(tentativeMaxD));
   var maxD = Math.ceil(tentativeMaxD/(10**(powD))) * (10**(powD));
 
-  window.maxes[window.network] = {hashrateMax: maxH, difficultyMax: maxD, blockTimeMax: 30};
+  window.maxes[sessionStorage.network] = {hashrateMax: maxH, difficultyMax: maxD, blockTimeMax: 30};
   console.log("Largest Hashrate: ",tentativeMaxH/1.3, "Proposed Max:", maxH);
   console.log("Largest Difficulty: ",tentativeMaxD/1.3, "Proposed Max:", maxD);
 }
@@ -337,13 +298,13 @@ function generateChart(){
     dataset = obj.dataset;
   }
 
-  var max = window.maxes[window.network][([0,"hashrateMax","blockTimeMax", "difficultyMax"][dataType])];
+  var max = window.maxes[sessionStorage.network][([0,"hashrateMax","blockTimeMax", "difficultyMax"][dataType])];
   // generate the options for this data type
   var options = generateOptions(dataType, labels, dataset, max);
   var trendsData = options[0];
   var trendsOptions = options[1];
 
-  // clear on the case we switched networks!
+  // clear in the case we switched networks!
   if(window.TrendsChart != undefined){
     window.TrendsChart.destroy();
   }
@@ -371,7 +332,7 @@ function generateChart(){
 function smooth(timestamps, dataset, numPoints){
   var windowSize = Math.round(dataset.length/numPoints);
 
-  var toMinimize = (dataset[0] > 10**window.exponent);
+  var toMinimize = (dataset[0] > exponents[sessionStorage.network]);
   var newDataset = [];
   var newTimestamps = [];
   var i = 0;
@@ -384,13 +345,13 @@ function smooth(timestamps, dataset, numPoints){
         numUsed = j;
         break;
       }
-      dataSum += toMinimize ? dataset[i+j]/(10**window.exponent) : dataset[i+j];
+      dataSum += toMinimize ? dataset[i+j]/exponents[sessionStorage.network] : dataset[i+j];
       timeSum += timestamps[i+j].valueOf();
     }  
     var avgTimestamp = moment(Math.round(timeSum/numUsed));
     var avgData = dataSum/numUsed;
     if(toMinimize){
-      avgData = avgData.toFixed(2) * 10**window.exponent;
+      avgData = avgData.toFixed(2) * exponents[sessionStorage.network];
     }
     newDataset.push(avgData);
     newTimestamps.push(avgTimestamp);

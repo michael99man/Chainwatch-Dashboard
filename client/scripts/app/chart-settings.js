@@ -18,6 +18,10 @@ var trendsOptions = {
       xAxes: [{
         gridLines: false,
         type: "time",
+        ticks:{ 
+          autoSkip: true,
+          padding: 10
+        },
         time: {
           unit: "day",
           unitStepSize: 1,
@@ -55,6 +59,13 @@ var trendsOptions = {
           },
           label: function(tooltipItem, data) {
             return "NOT-SET";
+          },
+          labelColor: function(tooltipItem, chart) {
+            var index = tooltipItem.datasetIndex;
+            return {
+              borderColor: chart.data.datasets[index].borderColor,
+              backgroundColor: chart.data.datasets[index].backgroundColor
+            };
           }
         }
       }
@@ -151,14 +162,14 @@ var trendsOptions = {
             return tick;
           }
             // Format the amounts using units/s
-            return tick >= 10**window.exponent ? Math.round(tick/10**window.exponent) + ' ' + unit() + '/s' : '';
+            return tick >= exponents[sessionStorage.network] ? Math.round(tick/exponents[sessionStorage.network]) + ' ' + unit() + '/s' : '';
           }
         }
       }];
 
       trendsOptions.tooltips.callbacks.label = function(tooltipItem, data) {
         var d = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-        return (d/(10**window.exponent)).toFixed(2) +  ' ' + unit() +'/s';
+        return (d/exponents[sessionStorage.network]).toFixed(2) +  ' ' + unit() +'/s';
       }
 
     } else if (dataType == 2){
@@ -223,14 +234,14 @@ var trendsOptions = {
             return 0;
           }
             // Format the amounts using TH/s
-            return tick >= 10**window.exponent ? Math.round(tick/10**window.exponent) + ' ' +  unit() : '';
+            return tick >= exponents[sessionStorage.network] ? Math.round(tick/exponents[sessionStorage.network]) + ' ' +  unit() : '';
           }
         }
       }];
 
       trendsOptions.tooltips.callbacks.label = function(tooltipItem, data) {
         var d = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-        return (d/(10**window.exponent)).toFixed(2) +  ' ' + unit();
+        return (d/exponents[sessionStorage.network]).toFixed(2) +  ' ' + unit();
       }
     }
 
